@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
-const exressJWT = require('express-jwt')
+const expressJWT = require('express-jwt')
 
 const app = express()
 
@@ -18,6 +18,10 @@ db.on('error', (err) => {
 })
 
 app.use('/auth', require('./routes/auth'))
+
+app.use('/locked',
+    expressJWT({secret: process.env.JWT_SECRET}).unless({method: 'POST'}),
+    require('./routes/locked'))
 
 app.listen(process.env.PORT, () => {
     console.log(`you are listening to the sweet sounds of port ${process.env.PORT}`)
